@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router()
 
-const { getCourses, createCourse, updateCourse, deleteCourse, enrollStudent, updateStudent, removeStudent } = require('../controllers/courses')
+const { getCourses, createCourse, updateCourse, deleteCourse, enrollStudent, updateStudent, removeStudent, getCourseAnalytics } = require('../controllers/courses')
 
 // Joi Validators
 const validate = require('../middlewares/validate');
@@ -31,6 +31,7 @@ const uploads = multer({ storage, fileFilter });
 
 
 router.get('/', getCourses);
+router.get('/analytics', getCourseAnalytics);
 router.post('/', instructorAuth, uploads.single('courseImage'), validate(courseSchema), createCourse);
 router.put('/:id', instructorAuth, validate(updateCourseSchema), updateCourse);
 router.delete('/:id', instructorAuth, deleteCourse);

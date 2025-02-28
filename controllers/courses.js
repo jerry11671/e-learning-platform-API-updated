@@ -13,6 +13,30 @@ const getCourses = async (req, res) => {
     return res.status(StatusCodes.OK).json({ status: true, code: 200, msg: 'All courses retrieved', data: courses })
 }
 
+
+// This analytics gets the number of students enrolled in a course
+const getCourseAnalytics = async (req, res) => {
+    const analytics = await Course.aggregate([
+        {
+            $project: {
+                title: 1,
+                studentCount: { $size: "$students" }  // Count number of students in each course
+            }
+        },
+        {
+            $sort: { studentCount: -1 }  // Optional: Sort by most enrolled courses
+        }
+    ]);
+
+    res.status(StatusCodes.OK).json({
+        status: true,
+        code: 200,
+        msg: "Course enrollment analytics retrieved successfully.",
+        data: analytics
+    });
+};
+
+
 const createCourse = async (req, res) => {
     const { id: instructorId, role } = req.user;
     const { title, duration, description, price } = req.body;
@@ -126,4 +150,4 @@ const removeStudent = async (req, res) => {
 
 
 
-module.exports = { getCourses, createCourse, updateCourse, deleteCourse, enrollStudent, updateStudent, removeStudent } 
+module.exports = { getCourses,  getCourseAnalytics, createCourse, updateCourse, deleteCourse, enrollStudent, updateStudent, removeStudent } 
